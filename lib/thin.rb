@@ -21,7 +21,8 @@ module Thin
   autoload :Runner,             'thin/runner'
   autoload :Server,             'thin/server'
   autoload :Stats,              'thin/stats'
-  
+  autoload :WebSocket,          'thin/web_socket'
+
   module Backends
     autoload :Base,             'thin/backends/base'
     autoload :SwiftiplyClient,  'thin/backends/swiftiply_client'

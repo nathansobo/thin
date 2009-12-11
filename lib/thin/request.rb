@@ -39,6 +39,7 @@ module Thin
     RACK_RUN_ONCE     = 'rack.run_once'.freeze
     ASYNC_CALLBACK    = 'async.callback'.freeze
     ASYNC_CLOSE       = 'async.close'.freeze
+    WEB_SOCKET        = 'thin.websocket'.freeze
 
     # CGI-like request environment variables
     attr_reader :env
@@ -133,6 +134,10 @@ module Thin
     def async_callback=(callback)
       @env[ASYNC_CALLBACK] = callback
       @env[ASYNC_CLOSE] = EventMachine::DefaultDeferrable.new
+    end
+
+    def web_socket=(web_socket)
+      @env[WEB_SOCKET] = web_socket
     end
     
     def async_close

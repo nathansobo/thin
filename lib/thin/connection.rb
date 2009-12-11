@@ -49,7 +49,9 @@ module Thin
     # Called when all data was received and the request
     # is ready to be processed.
     def process
-      if threaded?
+      if web_socket_connection?
+        process_web_socket_connection
+      elsif threaded?
         @request.threaded = true
         EventMachine.defer(method(:pre_process), method(:post_process))
       else
@@ -66,7 +68,7 @@ module Thin
       # It should be noted that connection objects will linger until this 
       # callback is no longer referenced, so be tidy!
       @request.async_callback = method(:post_process)
-      
+
       # When we're under a non-async framework like rails, we can still spawn
       # off async responses using the callback info, so there's little point
       # in removing this.
@@ -184,6 +186,16 @@ module Thin
     rescue Exception
       log_error
       nil
+    end
+
+    def web_socket_connection?
+      env = @request.env
+      env['HTTP_UPGRADE'] == 'WebSocket' && env['HTTP_CONNECTION'] == 'Upgrade'
+    end
+
+    def process_web_socket_connection
+      @request.web_socket = WebSocket.new(request, self)
+      @app.call(@request.env)
     end
 
     protected

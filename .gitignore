@@ -17,4 +17,6 @@ pkg/*
 nbproject/*
 .DS_Store
 daemon_test.log
-
+*.iml
+*.ipr
+*.iws
